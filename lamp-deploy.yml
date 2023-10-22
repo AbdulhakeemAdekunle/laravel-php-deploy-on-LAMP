@@ -1,0 +1,8 @@
+---
+- name: Setup Web Server
+  hosts: all
+  remote_user: root
+
+  tasks:
+  - name: Install AMP and deploy a laravel app using script
+    script: ~/altschool/lampsetupV2/lamp-deploy.sh
