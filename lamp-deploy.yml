@@ -6,3 +6,17 @@
   tasks:
   - name: Install AMP and deploy a laravel app using script
     script: ~/altschool/lampsetupV2/lamp-deploy.sh
+
+  - name: Check the server's up time at 12am daily
+    cron:
+      name: "get the current date"
+      minute: "0"
+      hour: "0"
+      job: "date >> /home/vagrant/uptime.log"
+
+  - name: Check the server's up time at 12am daily
+    cron:
+      name: "run uptime command at 12am"
+      minute: "0"
+      hour: "0"
+      job: "uptime -p >> /home/vagrant/uptime.log"
