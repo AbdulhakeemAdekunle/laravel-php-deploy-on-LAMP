@@ -1,6 +1,6 @@
 ## Laravel-PHP Deployment on a LAMP Stack
 
-**Project Objective**
+### Project Objective
 
 - Automation of two Ubuntu-based servers, using `Vagrant`.
 - To create an executable `Bash script` that will automate the deployment of a LAMP (Linux, Apache, MySQL, PHP) stack on one of the server, and also deployment of a `PHP` application cloned from a GitHub repo.
@@ -53,13 +53,16 @@ system with querying and connectivity capabilities.
 **Install Composer:** Composer helps us to manage dependencies in a Laravel project. I intentionally decided to move into the `/usr/bin` directory because it is a common location to put command line executables. You can install it without moving into the `/usr/bin` directory.  
  `cd /usr/bin && sudo apt install -y composer`
 
-**Move into /var/www/, the document root for apache:** Apache loads is documents from the `/var/www/html` directory. In the directory, there is an `index.html` file (Apache2 Default page), So I want to create a new directory for my Laravel project in `/var/www/` directory, and inside that same directory is where I will clone the laravel project from github.  
+**Move into /var/www/, the document root for apache:** Apache loads is documents from the `/var/www/html` directory. In the directory, there is an `index.html` file (Apache2 Default page).  
+So, I want to create a new directory for my Laravel project in `/var/www/` directory, and inside that same directory is where I will clone the laravel project from github.  
  `mkdir /var/www/laravel`
 
 **Clone the laravel git repository**  
  `sudo git clone https://github.com/laravel/laravel.git /var/www/laravel`  
+ 
  Create a variable to keep track of the default README file  
  `README=/var/www/laravel/README.md`  
+ 
  Check if the README file exists  
  `if [[ -a ${README} ]]; then`  
  `echo "Repository cloned successfully"`  
@@ -80,6 +83,7 @@ To do this I will copy the provided .env.example file and edit it appropriately
 **Editing the .env file**  
 `sed -i 's/APP_NAME=Laravel/APP_NAME=laravel/' /var/www/laravel/.env`  
 `sed -i 's/APP_ENV=local/APP_ENV=production/' /var/www/laravel/.env` _I want to assume that this is a production environment._  
+
 `sed -i 's/APP_DEBUG=true/APP_DEBUG=false/' /var/www/laravel/.env`  
 _Here I change `APP_DEBUG` option to false because in a prod env, when there's an error in my app, I want users to only see generic error message rather than a full error message with debugging information. But, for the first time, I can set it to `true` so that if it doesn't work as expected, I will get information about what went wrong._  
 `sed -i 's/APP_URL=http://localhost/APP_URL=http://192.168.56.100/' /var/www/laravel/.env`  
@@ -131,6 +135,18 @@ This is because I did not use a domain name for my laravel app. If I had a domai
 `exit`
 
 **To test the application:** I entered the VM's IP address in the browser, and I got the following webpage loaded.  
+
 ![](./master%20web%20page.png)
 
 _Yay! Our Laravel application has been deployed_
+
+The complete script file is accessible [here](./lamp-deploy.sh).  
+
+I have also written an ansible playbook which will help me run the script on the slave node. The playbook is accessible [here](./lamp-deploy.yml).  
+
+**To test the application on the slave node,** after running the Ansible playbook, I enter the slave IP address on my web browser, and I got the Laravel web page.  
+
+![](slave%20web%20page.png)
+
+Comments, suggestions, and feedback are welcomed to better improve this project.  
+*Thank you*
