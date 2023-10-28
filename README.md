@@ -15,11 +15,11 @@
 **To start with;** you will need to have an Ubuntu based system. For this project, I wrote a simple `Vagrantfile` which I used to setup my virtual machine. If you don't have an Ubuntu based system yet, you can spin up one, using the [Vagrantfile](./Vagrantfile) I created. Make sure that you have [Vagrant](https://developer.hashicorp.com/vagrant/downloads?product_intent=vagrant) installed on your machine, and also a virtualization tool: [VirtualBox](https://www.virtualbox.org/), or other virtualization tool.  
  Create a project directory, copy the Vagrantfile into that directory, from the directory, do: `vagrant up` from your shell terminal.
 
-Now that you have your Ubuntu installation completed successfully, the next step is to install other components that makes of the LAMP server, and also deploy your Laravel application.
+Now that you have your Ubuntu installation completed successfully, the next step is to install other components that makes up the LAMP server, and also deploy your Laravel application.
 
 I have also created a bash script that you can **re-use** to achieve the steps which I am about to outline. But, let's look into the script and go through each steps one after the other, to have an understanding of how the script works.
 
-Shebang preprocessing command  
+**Shebang preprocessing command**  
 `#!/bin/bash`
 
 **Update package repository:** To fetch the updated package list from repositories.  
@@ -35,10 +35,10 @@ system with querying and connectivity capabilities.
 **Add PHP repository:** This repository provides updated PHP packages for Ubuntu.  
 `echo -e "\n" | add-apt-repository ppa:ondrej/php`
 
-**Install PHP, Apache PHP Module, and PHP-MySQL:** This line installs PHP, and then installs the necessary PHP modules to work with Apache. Our PHP application also needs a database to work with, we installed MySQL earlier, hence we have to include the necessary PHP components for MySQL connectivity.  
+**Install PHP, Apache PHP Module, and PHP-MySQL:** This line installs PHP, and then installs the necessary PHP modules to work with Apache. Our PHP application also needs a database to work with, I installed MySQL earlier, hence I have to include the necessary PHP components for MySQL connectivity.  
 `sudo apt install -y php libapache2-mod-php php-mysql`
 
-**Install additional php modules that Laravel requires:** There are other PHP modules that are required by Laravel specicically. But they don't get installed by default when you install PHP. So we have to install those modules manually, and that's what the line does.  
+**Install additional php modules that Laravel requires:** There are other PHP modules that are required by Laravel specicically. But they don't get installed by default when you install PHP. So we have to install those modules manually, and that's what the next line does.  
  `sudo apt install -y php8.2-curl php8.2-dom php8.2-xml php8.2-mbstring zip unzip`
 
 **Enable URL rewriting:** This enables Apache `rewrite` module to allow Laravel's routing system to work.  
@@ -53,7 +53,7 @@ system with querying and connectivity capabilities.
 **Install Composer:** Composer helps us to manage dependencies in a Laravel project. I intentionally decided to move into the `/usr/bin` directory because it is a common location to put command line executables. You can install it without moving into the `/usr/bin` directory.  
  `cd /usr/bin && sudo apt install -y composer`
 
-**Move into /var/www/, the document root for apache:** Apache loads is documents from the `/var/www/html` directory. In the directory, there is an `index.html` file (Apache2 Default page) So I want to create a new directory for my Laravel project in `/var/www/` directory, and in that same directory is where I will clone the laravel project from github.  
+**Move into /var/www/, the document root for apache:** Apache loads is documents from the `/var/www/html` directory. In the directory, there is an `index.html` file (Apache2 Default page), So I want to create a new directory for my Laravel project in `/var/www/` directory, and inside that same directory is where I will clone the laravel project from github.  
  `mkdir /var/www/laravel`
 
 **Clone the laravel git repository**  
@@ -79,13 +79,13 @@ To do this I will copy the provided .env.example file and edit it appropriately
 
 **Editing the .env file**  
 `sed -i 's/APP_NAME=Laravel/APP_NAME=laravel/' /var/www/laravel/.env`  
-`sed -i 's/APP_ENV=local/APP_ENV=production/' /var/www/laravel/.env` I want to assume that this is a production environment.
+`sed -i 's/APP_ENV=local/APP_ENV=production/' /var/www/laravel/.env` _I want to assume that this is a production environment._  
 `sed -i 's/APP_DEBUG=true/APP_DEBUG=false/' /var/www/laravel/.env`  
-Here I change this to false because in a prod env, when there's an error in my app, I want users to only see generic error message rather than a full error message with debugging information. But, for the first time, I can set it to `true` so that if it doesn't work as expected, I will get information about what went wrong.
+_Here I change `APP_DEBUG` option to false because in a prod env, when there's an error in my app, I want users to only see generic error message rather than a full error message with debugging information. But, for the first time, I can set it to `true` so that if it doesn't work as expected, I will get information about what went wrong._  
 `sed -i 's/APP_URL=http://localhost/APP_URL=http://192.168.56.100/' /var/www/laravel/.env`  
-The ip address can be a domain name or the host ip address. Here the ip address is for the Master node.
+_The ip address can be a domain name or the host ip address. Here the ip address is for the Master node._
 
-`sed -i 's/APP_URL=http://localhost/APP_URL=http://192.168.56.101/' /var/www/laravel/.env` # Slave node IP address. Comment this line out if you want to run the script on your master node.
+`sed -i 's/APP_URL=http://localhost/APP_URL=http://192.168.56.101/' /var/www/laravel/.env` _Slave node IP address. Comment this line out if you want to run the script on your master node._
 
 **Generate the APP_KEY value within your .env file:** Run the following command  
 `cd /var/www/laravel && sudo php artisan key:generate`
@@ -127,10 +127,10 @@ This is because I did not use a domain name for my laravel app. If I had a domai
 **Restart Apache to make the changes take effect**  
 `sudo systemctl restart apache2`
 
-_Yay! Our Laravel application has been deployed_
-
 **Exit from the root user**  
 `exit`
 
 **To test the application:** I entered the VM's IP address in the browser, and I got the following webpage loaded.  
 ![](./master%20web%20page.png)
+
+_Yay! Our Laravel application has been deployed_
